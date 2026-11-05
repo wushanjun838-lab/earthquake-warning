@@ -1,5 +1,7 @@
 name: Build APK
 
+# 手机上传整个工程 zip 也能编译：仓库里放 earthquake-app-android.zip，
+# 本流程会先解压再编译；电脑上直接传工程文件同样能用。
 on:
   push:
   workflow_dispatch:
@@ -17,7 +19,7 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      -       - name: Set up Android SDK
+      - name: Set up Android SDK
         run: |
           mkdir -p "$HOME/Android/Sdk/cmdline-tools"
           cd "$HOME/Android/Sdk/cmdline-tools"
