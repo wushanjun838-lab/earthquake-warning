@@ -55,10 +55,12 @@ jobs:
       - name: Show failure cause
         if: failure()
         run: |
-          echo "=== FIRST ERROR LINES ==="
-          grep -m 25 -E "^e:|Execution failed|What went wrong|OutOfMemory|daemon disappeared|FAILED|error:" build.log || echo "(no matching lines found)"
-          echo "=== LAST 30 LINES ==="
-          tail -30 build.log
+          echo "=== FAILURE SECTION ==="
+          grep -A 12 "What went wrong" build.log | head -20 || echo "(no failure section)"
+          echo "=== CAUSED BY ==="
+          grep -m 10 -E "Caused by|^[> ]+.*(requires|minSdk|minCompileSdk|metadata|AAR)" build.log | head -15 || echo "(none)"
+          echo "=== FIRST e: LINES ==="
+          grep -m 10 "^e:" build.log || echo "(none)"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
