@@ -48,7 +48,17 @@ jobs:
           ls -la
 
       - name: Build debug APK
-        run: gradle assembleDebug --stacktrace --info
+        run: |
+          set -o pipefail
+          gradle assembleDebug --stacktrace --info 2>&1 | tee build.log
+
+      - name: Show failure cause
+        if: failure()
+        run: |
+          echo "=== FIRST ERROR LINES ==="
+          grep -m 25 -E "^e:|Execution failed|What went wrong|OutOfMemory|daemon disappeared|FAILED|error:" build.log || echo "(no matching lines found)"
+          echo "=== LAST 30 LINES ==="
+          tail -30 build.log
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
